@@ -1241,7 +1241,7 @@ SYSCALL_DEFINE1(newuname, struct new_utsname __user *, name)
 	up_read(&uts_sem);
 	if (copy_to_user(name, &tmp, sizeof(tmp)))
 		return -EFAULT;
-
+        override_custom_release(name->release, sizeof(name->release));
 	if (override_release(name->release, sizeof(name->release)))
 		return -EFAULT;
 	if (override_architecture(name))
@@ -1267,8 +1267,6 @@ SYSCALL_DEFINE1(uname, struct old_utsname __user *, name)
 	up_read(&uts_sem);
 	if (copy_to_user(name, &tmp, sizeof(tmp)))
 		return -EFAULT;
-
-	override_custom_release(name->release, sizeof(name->release));
 	if (override_release(name->release, sizeof(name->release)))
 		return -EFAULT;
 	if (override_architecture(name))
@@ -1294,7 +1292,7 @@ SYSCALL_DEFINE1(olduname, struct oldold_utsname __user *, name)
 	up_read(&uts_sem);
 	if (copy_to_user(name, &tmp, sizeof(tmp)))
 		return -EFAULT;
-
+	
 	if (override_architecture(name))
 		return -EFAULT;
 	if (override_release(name->release, sizeof(name->release)))
